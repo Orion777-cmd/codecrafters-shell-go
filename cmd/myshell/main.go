@@ -55,6 +55,13 @@ func main() {
 					fmt.Printf("%v: not found\n", splitOutput[1])
 				}
 			}
+		case "pwd":
+			dir, err := os.Getwd()
+			if err != nil {
+				fmt.Printf("%v\n", err)
+			} else {
+				fmt.Printf("%v\n", dir)
+			}
 		default:
 			pathVar := os.Getenv("PATH")
 			paths := strings.Split(pathVar, ":")
