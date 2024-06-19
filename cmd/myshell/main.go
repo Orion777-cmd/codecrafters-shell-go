@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"os/exec"
 )
 
 func main() {
@@ -55,8 +56,28 @@ func main() {
 				}
 			}
 		default:
-
-			fmt.Printf("%v: command not found\n", output[:len(output)-1])
+			pathVar := os.Getenv("PATH")
+			paths := strings.Split(pathVar, ":")
+			found := false
+			for _, path := range paths {
+				fullPath := filepath.Join(path, command)
+				info, err := os.Stat(fullPath)
+				if err == nil && info.Mode().IsRegular() && info.Mode().Perm()&0111 != 0 {
+					found = true
+					cmd := exec.Command(fullPath, splitOutput[1:]...)
+					cmd.Stdin = os.Stdin
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+					err := cmd.Run()
+					if err != nil {
+						fmt.Printf("%v\n", err)
+					}
+					break
+				}
+			}
+			if !found {
+				fmt.Printf("%v: command not found\n", output[:len(output)-1])
+			}				
 		}
 	}
 }
