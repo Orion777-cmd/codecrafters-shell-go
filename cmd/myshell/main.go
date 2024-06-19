@@ -67,7 +67,16 @@ func main() {
 				fmt.Println("cd: missing argument")
 				break
 			}
-			absPath, err := filepath.Abs(splitOutput[1])
+			path := splitOutput[1]
+			if strings.HasPrefix(path, "~") {
+				homeDir , err := os.UserHomeDir()
+				if err != nil {
+					fmt.Printf("%v\n", err)
+					break
+				}
+				path = filepath.Join(homeDir, path[1:])
+			}
+			absPath, err := filepath.Abs(path)
 			if err != nil {
 				fmt.Printf("%v\n", err)
 				break
