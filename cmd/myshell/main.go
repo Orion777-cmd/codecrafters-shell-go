@@ -62,6 +62,15 @@ func main() {
 			} else {
 				fmt.Printf("%v\n", dir)
 			}
+		case "cd":
+			if len(splitOutput) < 2 {
+				fmt.Println("cd: missing argument")
+				break
+			}
+			err := os.Chdir(splitOutput[1])
+			if err != nil {
+				fmt.Printf("%v: No such file or directory\n", splitOutput[1])
+			}
 		default:
 			pathVar := os.Getenv("PATH")
 			paths := strings.Split(pathVar, ":")
