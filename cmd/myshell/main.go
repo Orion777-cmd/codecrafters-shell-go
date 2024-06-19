@@ -67,7 +67,13 @@ func main() {
 				fmt.Println("cd: missing argument")
 				break
 			}
-			err := os.Chdir(splitOutput[1])
+			absPath, err := filepath.Abs(splitOutput[1])
+			if err != nil {
+				fmt.Printf("%v\n", err)
+				break
+			}
+
+			err = os.Chdir(absPath)
 			if err != nil {
 				fmt.Printf("%v: No such file or directory\n", splitOutput[1])
 			}
