@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -14,10 +15,16 @@ func main() {
 			fmt.Printf("%v\n", err)
 			return
 		}
-		command := output[:len(output)-1]
+		splitOutput := strings.Fields(output)
+		if len(splitOutput) == 0 {
+			return
+		}
+		command := splitOutput[0]
 		switch command {
-			case "exit 0":
+			case "exit":
 				return
+			case "echo":
+				fmt.Printf("%v\n", strings.Join(splitOutput[1:], " "))
 			default:
 				fmt.Printf("%v: command not found\n", output[:len(output)-1])
 		}
